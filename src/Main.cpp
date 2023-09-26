@@ -2,6 +2,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 
@@ -40,6 +41,7 @@ int main()
 	}
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	glfwSetKeyCallback(window, key_callback);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -119,9 +121,6 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	// Wireframe Mode
-	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput(window);
@@ -144,6 +143,17 @@ int main()
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) 
+{
+	// Handle Wireframe Mode
+	if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
+	{
+		GLint polygonMode;
+		glGetIntegerv(GL_POLYGON_MODE, &polygonMode);
+		glPolygonMode(GL_FRONT_AND_BACK, polygonMode == GL_LINE ? GL_FILL : GL_LINE);
+	}
 }
 
 void processInput(GLFWwindow* window) 
