@@ -1,4 +1,4 @@
-# Triangles
+# Hello, Triangle!
 Messing around with OpenGL!
 ## Dependencies
 [GLFW 3.3.8](https://github.com/glfw/glfw)
