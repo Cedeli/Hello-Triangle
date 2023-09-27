@@ -38,9 +38,10 @@ int main()
 		return -1;
 	}
 
-	// Triangle Data
+	// Vertex Data
 	// -------------
 	GLfloat vertices[] = {
+		 0.0f,  0.5f, 0.0f,  // Top Center
 		 0.5f,  0.5f, 0.0f,  // Top right
 		 0.5f, -0.5f, 0.0f,  // Bottom right
 		-0.5f, -0.5f, 0.0f,  // Bottom left
@@ -48,8 +49,7 @@ int main()
 	};
 
 	GLuint indices[] = {
-		0, 1, 3,
-		1, 2, 3
+		0, 2, 3
 	};
 
 	// Buffer Objects
