@@ -1,5 +1,5 @@
 #include <iostream>
-#include "gl_utils.hpp"
+#include "shader.hpp"
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
@@ -83,18 +83,7 @@ int main()
 
 	// Shader Initialization
 	// --------------------
-	GLuint vertexShader;
-	GLchar* vertexSource;
-	vertexSource = GLUtils::parseFileToString("src/shaders/triangle_shader.vert");
-	GLUtils::createShader(&vertexShader, vertexSource, GL_VERTEX_SHADER);
-
-	GLuint fragmentShader;
-	GLchar* fragmentSource;
-	fragmentSource = GLUtils::parseFileToString("src/shaders/triangle_shader.frag");
-	GLUtils::createShader(&fragmentShader, fragmentSource, GL_FRAGMENT_SHADER);
-
-	GLuint shaderProgram;
-	GLUtils::createProgram(&shaderProgram, vertexShader, fragmentShader);
+	Shader triangleShader("src/shaders/triangle_shader.vert", "src/shaders/triangle_shader.frag");
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -103,7 +92,7 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glUseProgram(shaderProgram);
+		triangleShader.use();
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
