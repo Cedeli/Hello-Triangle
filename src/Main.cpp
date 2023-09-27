@@ -1,4 +1,7 @@
 #include <iostream>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #include "shader.hpp"
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
