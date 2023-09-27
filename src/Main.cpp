@@ -41,34 +41,44 @@ int main()
 	// Vertex Data
 	// -------------
 	GLfloat vertices[] = {
-		 0.0f,  0.5f, 0.0f,  // Top Center
-		 0.5f,  0.5f, 0.0f,  // Top right
-		 0.5f, -0.5f, 0.0f,  // Bottom right
-		-0.5f, -0.5f, 0.0f,  // Bottom left
-		-0.5f,  0.5f, 0.0f   // Top left 
+		 // Positions        // Colors
+		 0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
+		-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,
+		 0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f
 	};
 
 	GLuint indices[] = {
-		0, 2, 3
+		0, 1, 2
 	};
 
 	// Buffer Objects
 	// --------------
+	GLuint VAOBind = 0;
+	GLuint posLayout = 0;
+	GLuint colLayout = 1;
+
 	GLuint VBO;
 	glCreateBuffers(1, &VBO);
 	glNamedBufferData(VBO, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	GLuint VAO;
 	glCreateVertexArrays(1, &VAO);
-	glVertexArrayAttribFormat(VAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
-	glVertexArrayAttribBinding(VAO, 0, 0);
-	glEnableVertexArrayAttrib(VAO, 0);
+	
+	// Position pointer
+	glVertexArrayAttribFormat(VAO, posLayout, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexArrayAttribBinding(VAO, posLayout, VAOBind);
+	glEnableVertexArrayAttrib(VAO, posLayout);
+
+	// Color pointer
+	glVertexArrayAttribFormat(VAO, colLayout, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float));
+	glVertexArrayAttribBinding(VAO, colLayout, VAOBind);
+	glEnableVertexArrayAttrib(VAO, colLayout);
 
 	GLuint EBO;
 	glCreateBuffers(1, &EBO);
 	glNamedBufferData(EBO, sizeof(indices), indices, GL_STATIC_DRAW);
 	
-	glVertexArrayVertexBuffer(VAO, 0, VBO, 0, sizeof(float) * 3);
+	glVertexArrayVertexBuffer(VAO, VAOBind, VBO, 0, 6 * sizeof(float));
 	glVertexArrayElementBuffer(VAO, EBO);
 
 	// Shader Initialization
