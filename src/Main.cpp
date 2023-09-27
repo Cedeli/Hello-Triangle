@@ -1,32 +1,12 @@
 #include <iostream>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "gl_utils.hpp"
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-
-// Shader Constants
-// TO DO: Move to their own files.
-// -------------------------------
-const char* vertexShaderSource = 
-	"#version 330 core\n"
-    "layout (location = 0) in vec3 triPos;\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = vec4(triPos.x, triPos.y, triPos.z, 1.0);\n"
-	"}\0";
-
-const char* fragmentShaderSource =
-	"#version 330 core\n"
-	"out vec4 triColor;\n"
-	"void main()\n"
-	"{\n"
-	"triColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-	"}\0";
 
 int main()
 {
@@ -47,8 +27,8 @@ int main()
 		return -1;
 	}
 	glfwMakeContextCurrent(window);
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	glfwSetKeyCallback(window, key_callback);
+	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+	glfwSetKeyCallback(window, keyCallback);
 
 	// GLAD: Initialization
 	// --------------------
@@ -58,52 +38,8 @@ int main()
 		return -1;
 	}
 
-	// Shader Initialization
-	// --------------------
-	GLuint vertexShader;
-	vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	glCompileShader(vertexShader);
-
-	int success;
-	char infoLog[512];
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-		std::cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-	}
-
-	GLuint fragmentShader;
-	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-	glCompileShader(fragmentShader);
-
-	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-	if (!success) 
-	{
-		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-		std::cerr << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-	}
-
-	GLuint shaderProgram;
-	shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
-
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-	if (!success) 
-	{
-		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-		std::cerr << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-	}
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-
 	// Triangle Data
 	// -------------
-	
 	GLfloat vertices[] = {
 		 0.5f,  0.5f, 0.0f,  // Top right
 		 0.5f, -0.5f, 0.0f,  // Bottom right
@@ -135,6 +71,21 @@ int main()
 	glVertexArrayVertexBuffer(VAO, 0, VBO, 0, sizeof(float) * 3);
 	glVertexArrayElementBuffer(VAO, EBO);
 
+	// Shader Initialization
+	// --------------------
+	GLuint vertexShader;
+	GLchar* vertexSource;
+	vertexSource = GLUtils::parseFileToString("src/shaders/triangle_shader.vert");
+	GLUtils::createShader(&vertexShader, vertexSource, GL_VERTEX_SHADER);
+
+	GLuint fragmentShader;
+	GLchar* fragmentSource;
+	fragmentSource = GLUtils::parseFileToString("src/shaders/triangle_shader.frag");
+	GLUtils::createShader(&fragmentShader, fragmentSource, GL_FRAGMENT_SHADER);
+
+	GLuint shaderProgram;
+	GLUtils::createProgram(&shaderProgram, vertexShader, fragmentShader);
+
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput(window);
@@ -154,14 +105,14 @@ int main()
 	return 0;
 }
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
 }
 
 // Wireframe Mode
 // --------------
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) 
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) 
 {
 	if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
 	{
