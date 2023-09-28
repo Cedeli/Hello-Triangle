@@ -16,6 +16,8 @@ public:
 	Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
 
 	void use();
+private:
+	bool compileStatus(GLuint target, GLenum type);
 };
 
 #endif

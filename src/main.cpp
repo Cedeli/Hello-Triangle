@@ -92,7 +92,7 @@ int main()
 	glVertexArrayElementBuffer(VAO, EBO);
 
 	// Shader Initialization
-	// --------------------
+	// ---------------------
 	Shader triangleShader("src/shaders/triangle_shader.vert", "src/shaders/triangle_shader.frag");
 
 	// Texture Initialization
