@@ -68,7 +68,7 @@ bool Shader::compileStatus(GLuint target, GLenum type)
 {
 	GLint success;
 	GLchar infoLog[512];
-	const char* shaderType;
+	const GLchar* shaderType;
 
 	if (type == GL_VERTEX_SHADER)
 	{
