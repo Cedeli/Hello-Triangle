@@ -1,9 +1,9 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <stb_image.h>
 
 #include "shader.hpp"
+#include "texture.hpp"
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
@@ -57,7 +57,7 @@ int main()
 
 	// Buffer Objects
 	// --------------
-	GLuint VAOBind = 0;
+	GLuint vaoBind = 0;
 	GLuint posLayout = 0;
 	GLuint colLayout = 1;
 	GLuint texLayout = 2;
@@ -71,24 +71,24 @@ int main()
 	
 	// Position pointer
 	glVertexArrayAttribFormat(VAO, posLayout, 3, GL_FLOAT, GL_FALSE, 0);
-	glVertexArrayAttribBinding(VAO, posLayout, VAOBind);
+	glVertexArrayAttribBinding(VAO, posLayout, vaoBind);
 	glEnableVertexArrayAttrib(VAO, posLayout);
 
 	// Color pointer
 	glVertexArrayAttribFormat(VAO, colLayout, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float));
-	glVertexArrayAttribBinding(VAO, colLayout, VAOBind);
+	glVertexArrayAttribBinding(VAO, colLayout, vaoBind);
 	glEnableVertexArrayAttrib(VAO, colLayout);
 
 	// Texture pointer
 	glVertexArrayAttribFormat(VAO, texLayout, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float));
-	glVertexArrayAttribBinding(VAO, texLayout, VAOBind);
+	glVertexArrayAttribBinding(VAO, texLayout, vaoBind);
 	glEnableVertexArrayAttrib(VAO, texLayout);
 
 	GLuint EBO;
 	glCreateBuffers(1, &EBO);
 	glNamedBufferData(EBO, sizeof(indices), indices, GL_STATIC_DRAW);
 	
-	glVertexArrayVertexBuffer(VAO, VAOBind, VBO, 0, 8 * sizeof(float));
+	glVertexArrayVertexBuffer(VAO, vaoBind, VBO, 0, 8 * sizeof(float));
 	glVertexArrayElementBuffer(VAO, EBO);
 
 	// Shader Initialization
@@ -97,28 +97,7 @@ int main()
 
 	// Texture Initialization
 	// ----------------------
-	GLuint texture;
-	glCreateTextures(GL_TEXTURE_2D, 1, &texture);
-	// Set the texture wrapping/filtering options (on the currently bound texture object)
-	glTextureParameteri(texture, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTextureParameteri(texture, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTextureParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTextureParameteri(texture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// Load and generate the texture
-	GLint width, height, nrChannels;
-	unsigned char* data = stbi_load("resources/textures/wall.jpg", &width, &height, &nrChannels, 0);
-	if (data)
-	{
-		// Allocate storage
-		glTextureStorage2D(texture, 1, GL_RGB8, width, height);
-		glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
-		glGenerateTextureMipmap(texture);
-	}
-	else
-	{
-		std::cerr << "Failed to load texture" << std::endl;
-	}
-	stbi_image_free(data);
+	Texture triangleTexture("resources/textures/wall.jpg");
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -127,7 +106,7 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindTexture(GL_TEXTURE_2D, triangleTexture.getTexture());
 
 		triangleShader.use();
 		glBindVertexArray(VAO);
