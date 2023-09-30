@@ -4,4 +4,4 @@ This project uses OpenGL 4.6 to recreate the famous “Hello Triangle” OpenGL 
 To run this project, you will need:
 - A C++ compiler that supports C++17
 - [GLFW 3.3.8](https://github.com/glfw/glfw)
-- [GLAD 4.6 Core](https://github.com/Dav1dde/glad)
+- [GLAD 4.5+ Core](https://github.com/Dav1dde/glad)
